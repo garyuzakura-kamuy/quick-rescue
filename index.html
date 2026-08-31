@@ -5,21 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>クイックレスキュー</title>
 
-  <!-- PWA基本設定（iOS/Android共通） -->
+  <!-- PWA基本設定 -->
   <meta name="theme-color" content="#121214">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="レスキュー">
 
-  <!-- アイコンデータ（SVGをData URIとして埋め込み：外部画像ファイル不要） -->
+  <!-- アイコンデータ -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚑</text></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚑</text></svg>">
 
-  <!-- インラインManifest（外部ファイル不要でGitHub/Vercelでエラーにならない） -->
-  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22%E3%82%AF%E3%82%A4%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%E3%82%AD%E3%83%A5%E3%83%BC%22,%22short_name%22:%22%E3%83%AC%E3%82%B9%E3%82%AD%E3%83%A5%E3%83%BC%22,%22start_url%22:%22./%22,%22display%22:%22standalone%22,%22background_color%22:%22%23121214%22,%22theme_color%22:%22%23121214%22}">
-
   <style>
-    /* 全体デザイン・カラーパレット */
     :root {
       --bg-color: #121214;
       --card-bg: #1E1E24;
@@ -33,10 +29,9 @@
       padding: 20px;
       background-color: var(--bg-color);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: flex;
       justify-content: center;
-      /* スマホ表示時に不要な選択や引っ張りを防ぐ設定 */
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
@@ -44,31 +39,75 @@
     .app-container {
       width: 100%;
       max-width: 480px;
-      margin-top: 20px;
+      margin-top: 10px;
     }
 
     /* ヘッダー */
     .header {
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .header h1 {
-      font-size: 24px;
-      margin: 0 0 8px 0;
+      font-size: 22px;
+      margin: 0 0 6px 0;
       display: flex;
       align-items: center;
       gap: 8px;
     }
     .header p {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-sub);
       margin: 0;
+    }
+
+    /* URL表示エリア（折り返し防止・真っ直ぐ表示） */
+    .url-display {
+      background: #18181C;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 20px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #82B1FF;
+      white-space: nowrap;        /* 改行させずに1行にする */
+      overflow-x: auto;          /* 幅を超えた場合は横スクロール */
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 緊急連絡エリア */
+    .emergency-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .emergency-btn {
+      flex: 1;
+      background: #D32F2F;
+      color: white;
+      text-decoration: none;
+      padding: 12px 8px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: bold;
+      font-size: 14px;
+      white-space: nowrap;        /* ボタンテキストの改行も防止 */
+      box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+    }
+
+    .emergency-btn.doc {
+      background: #1976D2;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
     }
 
     /* 2×2 グリッドレイアウト */
     .grid-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
     /* レスキューカードボタン */
@@ -76,15 +115,12 @@
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 16px;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 120px;
+      height: 115px;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      position: relative;
-      overflow: hidden;
       box-sizing: border-box;
     }
 
@@ -93,12 +129,12 @@
     }
 
     .card-icon {
-      font-size: 32px;
-      margin-bottom: 8px;
+      font-size: 28px;
+      margin-bottom: 6px;
     }
 
     .card-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
       line-height: 1.3;
     }
@@ -109,13 +145,12 @@
       margin-top: 4px;
     }
 
-    /* カードごとのアクセントカラーグラデーション */
-    .card-1 { border-top: 4px solid #FF5252; } /* 🚨 頭痛 */
-    .card-2 { border-top: 4px solid #FFA000; } /* 🍫 甘いもの */
-    .card-3 { border-top: 4px solid #29B6F6; } /* 💧 透析後 */
-    .card-4 { border-top: 4px solid #26A69A; } /* ✨ 先進医療 */
+    .card-1 { border-top: 4px solid #FF5252; }
+    .card-2 { border-top: 4px solid #FFA000; }
+    .card-3 { border-top: 4px solid #29B6F6; }
+    .card-4 { border-top: 4px solid #26A69A; }
 
-    /* ボトムシート（ポップアップモーダル） */
+    /* モーダル */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -131,30 +166,24 @@
       width: 100%;
       max-width: 480px;
       max-height: 80vh;
-      border-radius: 24px 24px 0 0;
-      padding: 24px;
+      border-radius: 20px 20px 0 0;
+      padding: 20px;
       box-sizing: border-box;
       overflow-y: auto;
-      animation: slideUp 0.3s ease-out;
       border-top: 1px solid var(--border-color);
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
     }
 
     .sheet-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
+      padding-bottom: 10px;
     }
 
     .sheet-title {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
     }
 
@@ -163,49 +192,34 @@
       border: none;
       color: var(--text-main);
       font-size: 16px;
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .sheet-body {
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.6;
       color: #E0E0E0;
     }
 
-    .sheet-body p {
-      margin: 0 0 12px 0;
-    }
-
-    .sheet-body ul {
-      margin: 0 0 12px 0;
-      padding-left: 20px;
-    }
-
-    .sheet-body li {
-      margin-bottom: 6px;
-    }
-
+    .sheet-body ul { margin: 0 0 10px 0; padding-left: 18px; }
+    .sheet-body li { margin-bottom: 4px; }
     .sheet-body .section-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
       color: #FFD54F;
-      margin: 16px 0 6px 0;
+      margin: 12px 0 4px 0;
       display: block;
     }
-
     .sheet-body .note-text {
-      font-size: 12px;
+      font-size: 11px;
       color: #A0A0AB;
       background: #25252D;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 12px;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -215,6 +229,21 @@
     <div class="header">
       <h1>クイックレスキュー 🚑</h1>
       <p>いま必要なサポートボタンをタップしてください</p>
+    </div>
+
+    <!-- 1行で真っ直ぐ表示するURL枠 -->
+    <div class="url-display">
+      https://quick-rescue-xxx.vercel.app
+    </div>
+
+    <!-- 緊急発信エリア -->
+    <div class="emergency-bar">
+      <a href="tel:119" class="emergency-btn">
+        <span>📞</span> 119番通報
+      </a>
+      <a href="tel:#7119" class="emergency-btn doc">
+        <span>🏥</span> #7119 (相談)
+      </a>
     </div>
 
     <!-- 2x2 グリッドボタン -->
@@ -253,7 +282,7 @@
     </div>
   </div>
 
-  <!-- ボトムシート表示エリア -->
+  <!-- モーダル -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
     <div class="bottom-sheet" onclick="event.stopPropagation()">
       <div class="sheet-header">
@@ -272,83 +301,49 @@
           <p><b>血液透析患者さんおよび糖尿病（2型・予備軍）の方</b>に向けたレスキュー案内です。</p>
           <span class="section-title">【生化学的な原因】</span>
           <ul>
-            <li><b>血液透析の方:</b> 透析によって首から上（脳）と首から下（体液）の浸透圧バランスが崩れやすくなることや、電解質の急激な変化が主な原因です。</li>
-            <li><b>糖尿病・高血糖の方:</b> 高血糖に伴う浸透圧利尿（多尿）による「脱水」や電解質の喪失、急激な血糖値スパイク後の反動などが原因で頭痛や激しい倦怠感が生じます。</li>
+            <li><b>血液透析の方:</b> 透析による脳と体液の浸透圧バランス低下や電解質変化が主な原因です。</li>
+            <li><b>糖尿病・高血糖の方:</b> 高血糖に伴う浸透圧利尿による脱水や血糖値スパイクの反動が原因です。</li>
           </ul>
           <span class="section-title">【対応のアプローチ】</span>
           <ul>
-            <li><b>こまめな水分・電解質補給:</b> ジュース類を避け、水やカフェインレスのお茶（麦茶等）を一口ずつこまめに補給し、血液の濃度をゆっくり希釈していきましょう。</li>
-            <li><b>幼児用経口補水液の活用:</b> カリウムやナトリウムの過剰摂取が気になる透析患者さんや水分調整中の方は、成分が控えめな<b>『幼児用の経口補水液』</b>を活用するのが安全でおすすめです。</li>
-            <li><b>クエン酸の工夫:</b> 水や麦茶（200ml）に<b>100%レモン果汁やシークヮーサー果汁を小さじ半分</b>ほど加えると、代謝を整え血液循環をスムーズにするサポートになります。</li>
-            <li><b>飲み方のコツ:</b> 急激に飲むと体液バランスが追いつかないため、<b>『一口ずつゆっくり含んで飲む』</b>のがポイントです。</li>
+            <li><b>こまめな水分補給:</b> 水やカフェインレスのお茶（麦茶等）を一口ずつ補給しましょう。</li>
+            <li><b>幼児用経口補水液:</b> カリウム・ナトリウム控えめで安全でおすすめです。</li>
+            <li><b>クエン酸の工夫:</b> 麦茶200mlに100%レモン果汁を小さじ半分加えると循環サポートになります。</li>
           </ul>
-          <div class="note-text">
-            ※強い吐き気・過呼吸・甘酸っぱい息の匂いがある場合はケトアシドーシス等の危険があるため無理をせず医療機関を受診してください。また、水分・電解質制限がある方は主治医の指示を優先してください。
-          </div>
         `
       },
       card2: {
         title: "🍫 甘いものが食べたい",
         content: `
-          <p><b>糖尿病（2型・予備軍）および血液透析患者さん</b>に向けたレスキュー案内です。</p>
-          <p>甘いものが猛烈に欲しくなるのは、意志の弱さではなく、身体がエネルギーの補給を求めている生化学的なサイン（SOS）です。</p>
-          <span class="section-title">【SGLT-1メカニズムを活用したアプローチ】</span>
+          <p>身体がエネルギー補給を求めている生化学的なSOSです。</p>
+          <span class="section-title">【SGLT-1メカニズム活用】</span>
           <ul>
-            <li>ドカ食いや急激な血糖値の上昇を防ぐため、<b>『質の良い微量な糖分 ＋ 微量の天然塩（ぬちまーす等）』</b>を組み合わせる方法が効果的です。</li>
-            <li>小腸の輸送メカニズム（SGLT-1）を通じて、糖とナトリウムを一緒に無理なく細胞へ届け、過度な欲求を穏やかに鎮めていきましょう。</li>
+            <li>「微量な糖分 ＋ 微量の天然塩（ぬちまーす等）」で急激な食欲を穏やかに鎮めます。</li>
+            <li>レモン果汁小さじ半分を水や茶に混ぜるとクエン酸が糖代謝をサポートします。</li>
           </ul>
-          <span class="section-title">【さらに血糖値の上昇を穏やかにする工夫】</span>
-          <ul>
-            <li>200mlほどの麦茶や水、紅茶、緑茶に、<b>100%レモン果汁や100%シークヮーサー果汁を小さじ半分の少量</b>加えて飲むのがおすすめです。</li>
-            <li>含まれる有機酸（クエン酸等）が糖の代謝をサポートし、血糖値の急激な上昇をさらに穏やかに抑えることができます。</li>
-          </ul>
-          <div class="note-text">
-            ※レモンやシークヮーサーはごく微量（小さじ半分程度）の使用ですが、厳格なカリウム制限がある方は主治医と相談のうえお試しください。
-          </div>
         `
       },
       card3: {
         title: "💧 透析後のケアについて",
         content: `
-          <p><b>血液透析患者さん</b>に向けた栄養・体調フォロー案内です。</p>
-          <p>透析を行った後は、水分や老廃物と一緒に、身体に必要な<b>栄養素や微量元素（亜鉛や銅などのミネラル）</b>も一緒に抜けやすい状態になっています。</p>
+          <p>透析後は微量元素（亜鉛や銅）が抜けやすい状態です。</p>
           <span class="section-title">【対応のアプローチ】</span>
           <ul>
-            <li>抜け落ちてしまった微量栄養素を安全かつ効率的に補う手段として、<b>粉ミルクなどを上手に活用した栄養補給</b>を取り入れる方法があります（量や回数を考慮した計画的なアプローチです）。</li>
-            <li>今日の体調や主治医の指示と照らし合わせながら、無理のないペースでコンディションを整えていきましょう。</li>
+            <li>粉ミルク等を活用した計画的な微量栄養素の補給が効果的です。</li>
+            <li>嘔吐等で食事が摂れない非常時は、バーガーショップのメニュー（ポテト等）も迅速な電解質・エネルギー補充の選択肢となります。</li>
           </ul>
-          <span class="section-title">【バランスの良い食事でも嘔吐してしまう場合】</span>
-          <p>透析後や体調不良時、バランスの良い食事を摂ろうとしても吐き出してしまう時は、非常手段として<b>マクドナルドなどのバーガーショップのメニュー（ハンバーガーやポテト）</b>を一時的なエネルギー補充手段として活用するのも1つの選択肢です（常用ではなく、急性期のエネルギー欠乏を回避する緊急避難策です）。</p>
-          <span class="section-title">【なぜバーガーショップのメニューなどが有効なのか（生化学的理由）】</span>
-          <ul>
-            <li><b>① 消化負担の少ない「高エネルギー＆単純炭水化物」:</b> 嘔吐時は消化器運動が低下しています。食物繊維の多い健康食よりも、精製されたバンズ等の単純炭水化物は消化吸収が速く、短時間で低血糖やエネルギー切れを防ぎます。</li>
-            <li><b>② 迅速な「塩分（ナトリウム）補給」による電解質維持:</b> 嘔吐で胃酸と共に塩分が失われ、低ナトリウム血症を引き起こします。ポテトやバーガーの塩分は、減った体液の電解質を素早く補います。</li>
-            <li><b>③ 少量で高カロリーを確保できる「本能的欲求」:</b> 食欲減退時でも塩分と脂質は脳の報酬系を刺激しやすく、少量口にするだけで必要なエネルギーを確保できます。</li>
-          </ul>
-          <div class="note-text">
-            <b>【摂り方の工夫】</b><br>
-            リンや水分の過剰摂取を防ぐため、セットの飲み物は清涼飲料水ではなく<b>『無糖の紅茶など』</b>を選び、一口ずつ無理のない範囲で試して身体への負担を減らすよう工夫しましょう。
-          </div>
         `
       },
       card4: {
         title: "✨ 未来の希望（先進医療・治験データ）",
         content: `
-          <p>今の辛い状態がずっと続くわけではありません。医療の最前線では、未来を変える研究が着実に進んでいます。</p>
           <span class="section-title">【最新の治験・研究データ】</span>
           <ul>
-            <li><b>1型・重症糖尿病（iPS細胞×膵島シート / IPC治療）:</b> 徳島大学等の研究（IPC：インスリン産生細胞）や、京都大学等での「iPS細胞由来の膵島細胞シート」の治験（段階的移植）が進行しています。インスリン注射が不要な状態を目指す技術です。</li>
-            <li><b>2型糖尿病（自己幹細胞投与・再生医療）:</b> 自己由来の幹細胞を投与し、膵臓のβ細胞の修復・血管再生や<b>「インスリン抵抗性の改善」</b>を図る臨床研究が進んでいます。薬やインスリン必要量の減量・離脱を目指す新しい選択肢です。</li>
-            <li><b>慢性腎臓病・腎不全（iPS細胞×腎前駆細胞・オルガノイド）:</b> 京大等のチームにより、iPS細胞由来の腎前駆細胞を用いて腎機能を維持し線維化を抑制する実験成果が発表され、ヒト臨床治験開始を目指す段階に入っています。</li>
-            <li><b>装着型・埋め込み型人工腎臓（WAK/iAK）:</b> ウェアラブル人工透析機（WAK）や埋め込み型人工腎臓（iAK）のプロジェクトも実用化へ向けロードマップを進めています。</li>
+            <li><b>iPS細胞×膵島シート:</b> インスリン注射不要を目指す治験が進行中。</li>
+            <li><b>自己幹細胞投与:</b> インスリン抵抗性の改善・寛解を目指す再生医療。</li>
+            <li><b>iPS細胞×腎前駆細胞:</b> 腎機能維持・線維化抑制のヒト治験へ。</li>
+            <li><b>装着型・埋め込み型人工腎臓（WAK/iAK）:</b> 2030年に向けた実用化ロードマップが進行中。</li>
           </ul>
-          <span class="section-title">【2030年に向けた展望】</span>
-          <p>2030年に向けて、重症糖尿病に対する「インスリン注射からの離脱・軽減をもたらす治療」、2型糖尿病の「根本改善・寛解へのアクセス」、そして「人工透析の頻度を大幅に減らす/置き換える装着型・埋め込み型デバイス」といった選択肢が現実的になると期待されています。</p>
-
-          <div class="note-text">
-            <b>【ご自身での情報収集の推奨】</b><br>
-            医療技術は日々アップデートされています。厚生労働省のリリースや研究機関の発表、関連動画などを通じて、最新情報を積極的にチェックしていくことをおすすめします。
-          </div>
         `
       }
     };
