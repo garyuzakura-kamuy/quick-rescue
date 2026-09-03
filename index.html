@@ -22,33 +22,32 @@
       --text-main: #FFFFFF;
       --text-sub: #A0A0AB;
       --border-color: #2D2D35;
+      --accent-color: #1976D2;
     }
 
     body {
       margin: 0;
-      padding: 20px;
+      padding: 16px;
       background-color: var(--bg-color);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: flex;
       justify-content: center;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
     }
 
     .app-container {
       width: 100%;
       max-width: 480px;
-      margin-top: 10px;
     }
 
     /* ヘッダー */
     .header {
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .header h1 {
       font-size: 22px;
-      margin: 0 0 6px 0;
+      margin: 0 0 4px 0;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -59,26 +58,25 @@
       margin: 0;
     }
 
-    /* URL表示エリア（折り返し防止・真っ直ぐ表示） */
+    /* URL表示エリア */
     .url-display {
       background: #18181C;
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 8px 12px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       font-family: monospace;
-      font-size: 12px;
+      font-size: 11px;
       color: #82B1FF;
-      white-space: nowrap;        /* 改行させずに1行にする */
-      overflow-x: auto;          /* 幅を超えた場合は横スクロール */
-      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      overflow-x: auto;
     }
 
     /* 緊急連絡エリア */
     .emergency-bar {
       display: flex;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .emergency-btn {
@@ -86,15 +84,15 @@
       background: #D32F2F;
       color: white;
       text-decoration: none;
-      padding: 12px 8px;
+      padding: 10px 8px;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
       font-weight: bold;
-      font-size: 14px;
-      white-space: nowrap;        /* ボタンテキストの改行も防止 */
+      font-size: 13px;
+      white-space: nowrap;
       box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
     }
 
@@ -107,48 +105,112 @@
     .grid-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
-    /* レスキューカードボタン */
     .rescue-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 14px;
+      border-radius: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 115px;
+      height: 105px;
       cursor: pointer;
       box-sizing: border-box;
     }
 
-    .rescue-card:active {
-      transform: scale(0.96);
+    .card-icon { font-size: 24px; margin-bottom: 4px; }
+    .card-title { font-size: 13px; font-weight: bold; }
+    .card-tag { font-size: 10px; color: var(--text-sub); margin-top: 2px; }
+
+    .card-1 { border-top: 3px solid #FF5252; }
+    .card-2 { border-top: 3px solid #FFA000; }
+    .card-3 { border-top: 3px solid #29B6F6; }
+    .card-4 { border-top: 3px solid #26A69A; }
+
+    /* AIチャットセクション */
+    .chat-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 10px;
     }
 
-    .card-icon {
-      font-size: 28px;
-      margin-bottom: 6px;
-    }
-
-    .card-title {
-      font-size: 14px;
+    .chat-header {
+      font-size: 15px;
       font-weight: bold;
-      line-height: 1.3;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #90CAF9;
     }
 
-    .card-tag {
-      font-size: 10px;
-      color: var(--text-sub);
-      margin-top: 4px;
+    .chat-box {
+      background: #121214;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      height: 200px;
+      padding: 12px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .card-1 { border-top: 4px solid #FF5252; }
-    .card-2 { border-top: 4px solid #FFA000; }
-    .card-3 { border-top: 4px solid #29B6F6; }
-    .card-4 { border-top: 4px solid #26A69A; }
+    .message {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.ai {
+      background: #252530;
+      color: #ECEFF1;
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+
+    .message.user {
+      background: #1565C0;
+      color: #FFFFFF;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chat-input-area {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: #121214;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 10px 14px;
+      color: white;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .chat-send-btn {
+      background: var(--accent-color);
+      border: none;
+      color: white;
+      border-radius: 20px;
+      padding: 0 16px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+    }
 
     /* モーダル */
     .modal-overlay {
@@ -182,45 +244,23 @@
       padding-bottom: 10px;
     }
 
-    .sheet-title {
-      font-size: 16px;
-      font-weight: bold;
-    }
+    .sheet-title { font-size: 16px; font-weight: bold; }
 
     .close-btn {
       background: #2D2D35;
       border: none;
       color: var(--text-main);
       font-size: 16px;
-      width: 30px;
-      height: 30px;
+      width: 30px; height: 30px;
       border-radius: 50%;
       cursor: pointer;
     }
 
-    .sheet-body {
-      font-size: 13px;
-      line-height: 1.6;
-      color: #E0E0E0;
-    }
-
+    .sheet-body { font-size: 13px; line-height: 1.6; color: #E0E0E0; }
     .sheet-body ul { margin: 0 0 10px 0; padding-left: 18px; }
     .sheet-body li { margin-bottom: 4px; }
-    .sheet-body .section-title {
-      font-size: 14px;
-      font-weight: bold;
-      color: #FFD54F;
-      margin: 12px 0 4px 0;
-      display: block;
-    }
-    .sheet-body .note-text {
-      font-size: 11px;
-      color: #A0A0AB;
-      background: #25252D;
-      padding: 8px;
-      border-radius: 6px;
-      margin-top: 10px;
-    }
+    .sheet-body .section-title { font-size: 14px; font-weight: bold; color: #FFD54F; margin: 12px 0 4px 0; display: block; }
+    .sheet-body .note-text { font-size: 11px; color: #A0A0AB; background: #25252D; padding: 8px; border-radius: 6px; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -231,19 +271,14 @@
       <p>いま必要なサポートボタンをタップしてください</p>
     </div>
 
-    <!-- 1行で真っ直ぐ表示するURL枠 -->
     <div class="url-display">
-      https://quick-rescue-xxx.vercel.app
+      https://quick-rescue-tau.vercel.app
     </div>
 
     <!-- 緊急発信エリア -->
     <div class="emergency-bar">
-      <a href="tel:119" class="emergency-btn">
-        <span>📞</span> 119番通報
-      </a>
-      <a href="tel:#7119" class="emergency-btn doc">
-        <span>🏥</span> #7119 (相談)
-      </a>
+      <a href="tel:119" class="emergency-btn"><span>📞</span> 119番通報</a>
+      <a href="tel:#7119" class="emergency-btn doc"><span>🏥</span> #7119 (相談)</a>
     </div>
 
     <!-- 2x2 グリッドボタン -->
@@ -278,6 +313,22 @@
           <div class="card-title">未来の希望</div>
           <div class="card-tag">先進医療・治験</div>
         </div>
+      </div>
+    </div>
+
+    <!-- AIチャットエリア -->
+    <div class="chat-section">
+      <div class="chat-header">
+        <span>🤖</span> レスキュー対話AI（購入者専用）
+      </div>
+      <div class="chat-box" id="chatBox">
+        <div class="message ai">
+          こんにちは！クイックレスキューサポートAIです。体調の変化や気になること、何でも気軽に話しかけてくださいね。
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="userInput" class="chat-input" placeholder="メッセージを入力..." onkeypress="handleKeyPress(event)">
+        <button class="chat-send-btn" onclick="sendMessage()">送信</button>
       </div>
     </div>
   </div>
@@ -352,7 +403,6 @@
       const overlay = document.getElementById('modalOverlay');
       const title = document.getElementById('modalTitle');
       const content = document.getElementById('modalContent');
-
       if (rescueData[cardId]) {
         title.innerHTML = rescueData[cardId].title;
         content.innerHTML = rescueData[cardId].content;
@@ -365,8 +415,53 @@
     }
 
     function closeModalOnOverlay(event) {
-      if (event.target.id === 'modalOverlay') {
-        closeModal();
+      if (event.target.id === 'modalOverlay') closeModal();
+    }
+
+    /* AIチャット処理 */
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') sendMessage();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      addMessage(text, 'user');
+      input.value = '';
+
+      // AI返答の生成（知識ベースに基づく回答）
+      setTimeout(() => {
+        const reply = generateAIReply(text);
+        addMessage(reply, 'ai');
+      }, 600);
+    }
+
+    function addMessage(text, sender) {
+      const chatBox = document.getElementById('chatBox');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${sender}`;
+      msgDiv.innerText = text;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function generateAIReply(userText) {
+      const lower = userText.toLowerCase();
+      
+      if (lower.includes('頭痛') || lower.includes('怠い') || lower.includes('だるい') || lower.includes('しんどい')) {
+        return "頭痛や倦怠感ですね。透析や高血糖による水分・浸透圧の急激な変化が原因の場合があります。一口ずつカフェインレスのお茶や、カリウム控えめの幼児用経口補水液をゆっくり含んで飲んでみてください。レモン果汁を少量加えるのもおすすめです。";
+      } else if (lower.includes('甘い') || lower.includes('食べたい') || lower.includes('腹減った') || lower.includes('空腹')) {
+        return "甘いものを欲するのは体の生化学的なエネルギー要求（SOS）です！微量の糖分にぬちまーす等の天然塩を少量合わせることで、SGLT-1メカニズムを通じて効率よく吸収され、欲求が落ち着きやすくなりますよ。";
+      } else if (lower.includes('透析') || lower.includes('吐き気') || lower.includes('吐く') || lower.includes('気持ち悪い')) {
+        return "透析後は亜鉛などの微量元素が抜けやすく疲れが出やすいです。万が一食事を受け付けず吐いてしまう時は、無理な健康食よりジャンクなポテト等の塩分と単純炭水化物が緊急のエネルギー補給として役立つこともあります。";
+      } else if (lower.includes('治験') || lower.includes('未来') || lower.includes('治る') || lower.includes('iPS')) {
+        return "医療は確実に進歩しています！iPS細胞を用いた膵島シートの移植治験や、自己幹細胞投与によるインスリン抵抗性の改善、装着型・埋め込み型人工腎臓（WAK/iAK）など、2030年に向けた明るい選択肢がたくさん研究されています。";
+      } else if (lower.includes('ありがとう') || lower.includes('感謝')) {
+        return "どういたしまして！いつでも頼りにしてくださいね。無理せず体を大切に過ごしてください。";
+      } else {
+        return `「${userText}」についてのご相談ですね。体調に違和感がある時は、まずは落ち着いて水分（麦茶や水）を一口含み、深呼吸してみましょう。詳しい症状や気になることがあれば何でも教えてくださいね。`;
       }
     }
   </script>
